@@ -20,7 +20,7 @@ export async function GET(request) {
 
 
 export async function DELETE(request) {
-    const body=await request
+    const body=await request.json()
     const idArticulo=body.id
     
     const {data:deleteData,error}=await supabase
