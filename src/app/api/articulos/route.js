@@ -22,6 +22,18 @@ export async function POST(response) {
     return new Response(JSON.stringify((data[0]),{status:200}))
 }
 
+
+export async function PUT(response) {
+    const body=await response.json()
+    const{id,titulo,contenido,autor,fecha}=body
+    const{data,error}=await supabase
+    .from("articulos")
+    .update([{titulo,contenido,autor,fecha_publicacion:fecha}])
+    .eq("id",id)
+    .select();
+    if(error){return new Response(JSON.stringify((error)),{status:400})}
+    return new Response(JSON.stringify((data[0]),{status:200}))
+}
 export async function DELETE(response) {
     const body=await response.json()
     const id=body.id
@@ -32,3 +44,4 @@ export async function DELETE(response) {
     if(error){return new Response(JSON.stringify((error),{status:400}))}
     return new Response(JSON.stringify((variable),{status:200}))
 }
+

@@ -1,7 +1,8 @@
+"use client"
 import { useParams } from "next/navigation"
-import { useState } from "react"
+import { useState,useEffect } from "react"
 
-export default function detallesArticulos({params}){
+export default function detallesArticulos(){
     const params=useParams()
     const idArticulo=params.id
 
