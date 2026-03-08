@@ -1,11 +1,11 @@
-"use client"
 import { useParams } from "next/navigation"
-import { useEffect, useState } from "react"
-export default function Articulo(){
+import { useState } from "react"
+
+export default function detallesArticulos({params}){
     const params=useParams()
     const idArticulo=params.id
 
-    const [articulo,setArticulo]=useState(null)
+    const [articulo,setArticulo]=useState([])
     const [cargando,setCargando]=useState(true)
 
     useEffect(()=>{
@@ -16,7 +16,7 @@ export default function Articulo(){
                     const data=await response.json()
                     setArticulo(data)
                 }else{
-                    console.error("Error al obtener el articulo")
+                    console.error("Error al obtener el registro")
                 }
             }catch(error){
                 console.error("Error en la solicitud:",error)
@@ -24,16 +24,15 @@ export default function Articulo(){
                 setCargando(false)
             }
         }
-        if(idArticulo)fetchArticulo()
+        if(idArticulo) fetchArticulo()
     },[idArticulo])
-    if(cargando)return<div>Cargando...</div>
-    if(!articulo)return<div>No existe wiwi</div>
+    if(cargando)return<p>Cargando</p>
     return(
         <div>
-            <p>Titulo:{articulo.titulo}</p>
-            <p>Contenido:{articulo.contenido}</p>
-            <p>Autor:{articulo.autor}</p>
-            <p>Tiempo:{articulo.fecha_publicacion}</p>
+            <p>Titulo{articulo.titulo}</p>
+            <p>Autor{articulo.autor}</p>
+            <p>contenido{articulo.contenido}</p>
+            <p>Fecha{articulo.fecha_publicacion}</p>
         </div>
     )
 }

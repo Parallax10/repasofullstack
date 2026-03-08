@@ -4,31 +4,54 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET(request) {
-    const{data:productos,error}=await supabase
-    .from("productos")
-    .select("*");
-
-    if(error){
+    const {searchParams}=new URL(request.url)
+    const stockparams=searchParams.get("stock")
+    if(stockparams!=null){
+        const{data:productos,error}=await supabase
+        .from("productos")
+        .select("*")
+        .eq("stock",stockparams)
+        if(error){
+            return new Response(JSON.stringify(error),{status:400});
+        }
+        return new Response(JSON.stringify(productos),{status:200})
+    }else{
+        const{data:productos,error}=await supabase
+        .from("productos")
+        .select("*");
+        if(error){
         return new Response(JSON.stringify(error),{status:400});
+        }
+        return new Response(JSON.stringify(productos),{status:200})
     }
-    return new Response(JSON.stringify(productos),{status:200})
+}
+
+export async function DELETE(request) {
+    const body=await request.json()
+    const id=body.id
+    const {data:productos,error}=await supabase
+    .from("productos")
+    .delete()
+    .eq("id",id)
+
+    if (error){return new Response(JSON.stringify((error),{status:400}))}
+
+    return new Response(JSON.stringify((productos),{status:200}))
 }
 
 export async function POST(request) {
     const body=await request.json()
-    const {nombre,descripcion,precio,stock}=body
+    const {nombre,descripcion,precio,stock,fecha}=body
     const {data,error}=await supabase
     .from("productos")
-    .insert([{nombre,descripcion,precio,stock}])
+    .insert([{nombre,descripcion,precio,stock,fecha}])
     .select();
     if(error){
-        return new Response(JSON.stringify(error)),{
-            status:400,
-            headers:{"Content-Type":"application/json"},
-        }
-        
+        return new Response(JSON.stringify(error),{
+            status:400
+        })
     }
     return new Response(JSON.stringify(data[0]),
-    {status:200,headers:{"Content-Type":"application/json"}}
+    {status:200}
 )
 }
